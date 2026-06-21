@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # --- BROKER DE MENSAJES ---
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: corposalud-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+    ports:
+      - "5672:5672"   # Puerto de mensajería
+      - "15672:15672" # Dashboard de RabbitMQ (user: guest, pass: guest)
+    networks:
+      - backend-network
+
+  # --- API GATEWAY (NESTJS) ---
+  api-gateway:
+    build:
+      context: ./apps/api-gateway
+      dockerfile: Dockerfile
+    container_name: corposalud-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq:5672
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - rabbitmq
+    networks:
+      - backend-network
+
+  # --- WORKER DE PROCESAMIENTO (FASTAPI) ---
+  worker-processor:
+    build:
+      context: ./apps/worker-processor
+      dockerfile: Dockerfile
+    container_name: corposalud-worker
+    environment:
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    networks:
+      - backend-network
+
+  # --- FRONTEND (NEXTJS) ---
+  frontend:
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile
+    container_name: corposalud-frontend
+    ports:
+      - "80:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    depends_on:
+      - api-gateway
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge

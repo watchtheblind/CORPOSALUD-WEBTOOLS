@@ -1,0 +1,30 @@
+# --- Núcleo de FastAPI y Servidor ---
+fastapi==0.110.0
+uvicorn[standard]==0.28.0
+
+# --- Procesamiento y Manipulación de PDFs (Alto Rendimiento) ---
+# PyMuPDF (fitz) es extremadamente rápido porque está escrito en C. Ideal para compresión, división y renderizado.
+PyMuPDF==1.23.26
+# pypdf es excelente para manipulación pura de estructuras de archivos, metadatos y encriptación/descifrado seguro.
+pypdf==4.1.0
+# reportlab se utiliza para la generación y reescritura de documentos desde cero con tipografía profesional.
+reportlab==4.1.0
+# --- Análisis de Datos y Métricas ---
+pandas==2.2.1
+# --- Procesamiento Avanzado e Imágenes (Opcional para OCR/Conversiones) ---
+# Pillow es vital para manejar la compresión y conversión de imágenes extraídas o insertadas en los PDFs.
+Pillow==10.2.0
+
+# --- Comunicación Asíncrona (Microservicios) ---
+# aio-pika es el cliente asíncronico para RabbitMQ, indispensable para no bloquear el loop de eventos de FastAPI.
+aio-pika==9.4.0
+redis==5.0.3
+
+# --- Validación de Datos y Entorno ---
+pydantic==2.6.4
+pydantic-settings==2.2.1
+python-dotenv==1.0.1
+
+# --- Cliente de Almacenamiento (Para guardar/descargar de S3 o MinIO) ---
+# aiobotocore permite conectarse a AWS S3 o MinIO de forma 100% asíncrona.
+aiobotocore==2.12.1
