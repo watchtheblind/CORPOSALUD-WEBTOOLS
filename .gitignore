@@ -22,3 +22,5 @@ build/
 .vscode/
 .idea/
 .DS_Store
+apps/frontend/.opencode/gemini_gems_data.html
+apps/frontend/.opencode/gemini_scheduled_actions_data.html
